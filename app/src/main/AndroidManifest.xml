@@ -25,8 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScanBarcodeActivity"></activity>
-        <activity android:name=".NameListActivity"></activity>
+        <activity android:name=".ScanBarcodeActivity"
+            android:label="Scan"></activity>
+        <activity android:name=".NameListActivity"
+            android:label="Entry List"></activity>
     </application>
 
 </manifest>

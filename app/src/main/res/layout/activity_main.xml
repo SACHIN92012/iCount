@@ -10,7 +10,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scan Barcode"
+        android:text="Scan QR code"
         android:onClick="scanBarcode"
         android:id="@+id/scan_barcode"
         android:layout_centerHorizontal="true"
@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:text="EntryList"
         android:id="@+id/list"
+        android:layout_alignParentBottom="true"
         android:onClick="entryList"/>
 
 </RelativeLayout>
