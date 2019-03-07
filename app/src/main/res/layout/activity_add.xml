@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/container_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Building No."
+            android:textSize="20dp"
+            android:paddingRight="80dp"/>
+
+        <!-- Input field -->
+            <!-- Gender drop-down spinner -->
+            <Spinner
+                android:id="@+id/spinner_gender"
+                android:layout_height="48dp"
+                android:layout_width="match_parent"
+                android:paddingRight="16dp"
+                android:spinnerMode="dropdown"/>
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Scan QR Code"
+        android:id="@+id/scan_qr_code"
+        android:onClick="scanQRCode"/>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <android.support.design.widget.FloatingActionButton
+        android:onClick="selection"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp"
+        android:background="#00FF00"
+        android:src="@mipmap/tick"/>
+    </RelativeLayout>
+</LinearLayout>
