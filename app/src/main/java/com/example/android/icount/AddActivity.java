@@ -60,12 +60,12 @@ public class AddActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals("Block 4")) {
+                    if (selection.equals("Block 3")) {
+                        mGender = 3;
+                    } else if (selection.equals("Block 4")) {
                         mGender = 4;
-                    } else if (selection.equals("Block 5")) {
-                        mGender = 5;
                     } else {
-                        mGender = 6;
+                        mGender = 5;
                     }
                 }
             }
