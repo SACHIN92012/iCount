@@ -36,7 +36,9 @@
         <activity
             android:name=".AddActivity"
             android:label="Add QR code" />
-        <activity android:name=".GraphActivity"></activity>
+        <activity android:name=".GraphActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".SearchListActivity"></activity>
     </application>
 
 </manifest>

@@ -20,6 +20,7 @@ public final class dataContract {
         public final static String IS_ENTERED="isEntered";
         public final static String BEST_TABLE="BestTable";
         public final static String TABLE_NAME3="ExitTable";
+        public final static String ROLL_NO="RollNumber";
 
         public final static String NUMBER_TABLE="NumberTable";
         public final static String NUMBER="number";

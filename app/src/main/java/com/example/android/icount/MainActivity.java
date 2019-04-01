@@ -149,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent1=new Intent(MainActivity.this,AddActivity.class);
                 startActivity(intent1);
                 return true;
+            case R.id.search:
+                Intent intent3=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent3);
+                return true;
+
             case R.id.graph:
                 Intent intent2=new Intent(MainActivity.this,GraphActivity.class);
                 startActivity(intent2);
@@ -173,18 +178,22 @@ public class MainActivity extends AppCompatActivity {
                     String p="";
                     //barcodeResult.setText(barcode.displayValue);
                     String s=String.valueOf(barcode.displayValue.toCharArray(),0,barcode.displayValue.length());
-                    int count=0,i;
+                    int count=0,i,i1=0;
+
                     for(i=0;i<s.length();i++)
                     {
                         if(s.charAt(i)=='\n') {
                             if (count == 1)
                                 break;
                             else {
+                                i1=i;
                                 count++;
                             }
                         }
                     }
+                    String s1=String.valueOf(barcode.displayValue.toCharArray(),i1+1,i-i1-1);
                     String s2=String.valueOf(barcode.displayValue.toCharArray(),0,i+1);
+                    Toast.makeText(MainActivity.this,s1,Toast.LENGTH_SHORT).show();
                     emp_name=s2;
                     String entry;
                     Boolean b1=map1.get(s2);
@@ -252,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
                             values.put(dataContract.dataEntry.ENTRY_TIME,time);
                             values.put(dataContract.dataEntry.ENTRY_NUMBER,map2.get(s2));
                             values.put(dataContract.dataEntry.IS_ENTERED,1);
+                            values.put(dataContract.dataEntry.ROLL_NO,s1);
                             //values.put(dataContract.dataEntry.NUMBER,number);
                             db2.insert(dataContract.dataEntry.TABLE_NAME2,null,values);
                             //values1.put(dataContract.dataEntry.NUMBER,number);

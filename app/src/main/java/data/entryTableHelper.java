@@ -38,6 +38,7 @@ public class entryTableHelper extends SQLiteOpenHelper{
                 + dataContract.dataEntry.COLUMN_BUILDING_NUMBER + " INTEGER  DEFAULT 0 ,"
                 + dataContract.dataEntry.ENTRY_NUMBER+" INTEGER ,"
                 + dataContract.dataEntry.IS_ENTERED+" INTEGER ,"
+                + dataContract.dataEntry.ROLL_NO+" TEXT ,"
                 + dataContract.dataEntry.ENTRY_TIME+" TEXT);";
 
 
@@ -58,7 +59,7 @@ public class entryTableHelper extends SQLiteOpenHelper{
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_PETS_TABLE2);
-        db.execSQL(SQL_CREATE_PETS_TABLE3);
+        //db.execSQL(SQL_CREATE_PETS_TABLE3);
         db.execSQL(SQL_CREATE_PETS_TABLE4);
     }
 
