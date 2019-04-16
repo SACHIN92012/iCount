@@ -11,7 +11,11 @@
         android:text="Please Scan Your QR code here"/>
     <SurfaceView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="70dp"
         android:id="@+id/camera_preview"/>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/scan_preview" />
 </LinearLayout>

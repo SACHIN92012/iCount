@@ -22,6 +22,9 @@ public final class dataContract {
         public final static String TABLE_NAME3="ExitTable";
         public final static String ROLL_NO="RollNumber";
 
+
+        public final static String BLOCK[]={"Block0","Block1","Block2","Block3","Block4","Block5","Block6"};
+
         public final static String NUMBER_TABLE="NumberTable";
         public final static String NUMBER="number";
     }

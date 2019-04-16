@@ -42,6 +42,22 @@ public class entryTableHelper extends SQLiteOpenHelper{
                 + dataContract.dataEntry.ENTRY_TIME+" TEXT);";
 
 
+        String Block[]=new String[7];
+
+        for(int i=0;i<7;i++)
+        {
+            Block[i] =  "CREATE TABLE " + dataContract.dataEntry.BLOCK[i] + " ("
+                    + dataContract.dataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + dataContract.dataEntry.COLUMN_NAME + " TEXT , "
+                    + dataContract.dataEntry.ENTRY_TEXT+" TEXT ,"
+                    + dataContract.dataEntry.COLUMN_BUILDING_NUMBER + " INTEGER  DEFAULT 0 ,"
+                    + dataContract.dataEntry.ENTRY_NUMBER+" INTEGER ,"
+                    + dataContract.dataEntry.IS_ENTERED+" INTEGER ,"
+                    + dataContract.dataEntry.ROLL_NO+" TEXT ,"
+                    + dataContract.dataEntry.ENTRY_TIME+" TEXT);";
+        }
+
+
         String SQL_CREATE_PETS_TABLE4 =  "CREATE TABLE " + dataContract.dataEntry.NUMBER_TABLE + " ("
                 + dataContract.dataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + dataContract.dataEntry.ENTRY_TIME+" TEXT );";
@@ -61,6 +77,11 @@ public class entryTableHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_PETS_TABLE2);
         //db.execSQL(SQL_CREATE_PETS_TABLE3);
         db.execSQL(SQL_CREATE_PETS_TABLE4);
+
+        for(int i=0;i<7;i++)
+        {
+            db.execSQL(Block[i]);
+        }
     }
 
     /**

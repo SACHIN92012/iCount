@@ -38,7 +38,12 @@
             android:label="Add QR code" />
         <activity android:name=".GraphActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".SearchListActivity"></activity>
+        <activity android:name=".SearchListActivity" />
+        <activity
+            android:name=".MainActivity2"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".BlockActivity" />
+        <activity android:name=".ScanQRActivity"></activity>
     </application>
 
 </manifest>

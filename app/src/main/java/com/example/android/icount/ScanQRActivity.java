@@ -1,19 +1,18 @@
 package com.example.android.icount;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.CameraSource;
@@ -23,12 +22,13 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 
-public class ScanBarcodeActivity extends AppCompatActivity{
+public class ScanQRActivity extends AppCompatActivity {
+
     SurfaceView cameraPreview;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_barcode);
+        setContentView(R.layout.activity_scan_qr);
         cameraPreview=(SurfaceView)findViewById(R.id.camera_preview);
         createCameraSource();
     }
@@ -39,10 +39,10 @@ public class ScanBarcodeActivity extends AppCompatActivity{
         cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                if(ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
+                if(ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
                 {
                     requestCameraPermission();
-                    if(ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED)
+                    if(ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED)
                     {
                         try{
                             cameraSource.start(cameraPreview.getHolder());
@@ -88,10 +88,60 @@ public class ScanBarcodeActivity extends AppCompatActivity{
                 final SparseArray<Barcode> barcodes=detections.getDetectedItems();
                 if(barcodes.size()>0)
                 {
-                    Intent intent=new Intent();
-                    intent.putExtra("barcode",barcodes.valueAt(0));
-                    setResult(CommonStatusCodes.SUCCESS,intent);
-                    finish();
+
+                    final TextView scanPreview=(TextView)findViewById(R.id.scan_preview);
+                    final String s=String.valueOf(barcodes.valueAt(0).displayValue.toCharArray(),0,barcodes.valueAt(0).displayValue.length());
+                    //scanPreview.setText(s);
+                    Thread t=new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+
+
+                                Thread.sleep(2000);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        scanPreview.setText(s);
+                                    }
+                                });
+                            }
+                            catch (InterruptedException e)
+                            {
+
+                            }
+
+                        }
+                    };
+
+                    Thread t1=new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+
+
+                                Thread.sleep(4000);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        scanPreview.setText("");
+                                    }
+                                });
+                            }
+                            catch (InterruptedException e)
+                            {
+
+                            }
+
+                        }
+                    };
+                    t.start();
+                    t1.start();
+
+//                    Intent intent=new Intent();
+//                    intent.putExtra("barcode",barcodes.valueAt(0));
+//                    setResult(CommonStatusCodes.SUCCESS,intent);
+                    //finish();
                 }
             }
         });
@@ -106,7 +156,7 @@ public class ScanBarcodeActivity extends AppCompatActivity{
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(ScanBarcodeActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+                            ActivityCompat.requestPermissions(ScanQRActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -121,5 +171,5 @@ public class ScanBarcodeActivity extends AppCompatActivity{
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
         }
     }
-}
 
+}
