@@ -30,12 +30,6 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent1=new Intent(MainActivity.this,MainActivity2.class);
                         startActivity(intent1);
                         break;
-//                    case R.id.Block4:
-//                        mBlock=4;
-//                        Intent intent =new Intent(MainActivity.this,BlockActivity.class);
-//                        startActivity(intent);
-//                        //mBlock=0;
-//                        break;
                     case R.id.Block4:
                         mBlock=4;
                         Intent intent =new Intent(MainActivity.this,MainActivity2.class);

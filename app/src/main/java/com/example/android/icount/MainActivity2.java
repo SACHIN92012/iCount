@@ -1,5 +1,6 @@
 package com.example.android.icount;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,13 +15,26 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import data.dataContract;
 import data.dataDbHelper;
@@ -42,6 +56,9 @@ public class MainActivity2 extends AppCompatActivity {
     public static HashMap <String,Integer> []map4=new HashMap[7];
     //public static ArrayList <String> name=new ArrayList<>();
     public static ArrayList <String> name2[]=new ArrayList[7];
+    public static Boolean b1;
+    public static String s1,s2,time,entry,entry1,date;
+    public static int flag1=0,check1=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,105 +97,61 @@ public class MainActivity2 extends AppCompatActivity {
                 }
             }
         });
-        //name.clear();
-        if(1==1)
-         {
-            entryTableHelper mdataDbHelper = new entryTableHelper(MainActivity2.this);
 
-            SQLiteDatabase db1 = mdataDbHelper.getReadableDatabase();
-            ContentValues values = new ContentValues();
+        if(name2[0].size()==0)
+        {
+            StringRequest stringRequest1 = new StringRequest(Request.Method.GET, Constants.URL_FETCH_ENTRY_TABLE, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
 
-            String[] projection = {
-                    dataContract.dataEntry.COLUMN_NAME,
-                    dataContract.dataEntry.COLUMN_BUILDING_NUMBER, dataContract.dataEntry.ENTRY_TEXT, dataContract.dataEntry.IS_ENTERED, dataContract.dataEntry.ENTRY_TIME, dataContract.dataEntry.ENTRY_NUMBER
-            };
-            String selection = dataContract.dataEntry.COLUMN_NAME + "=?";
-            String[] selectionArgs = {emp_name};
+                    try {
+                        JSONArray products = new JSONArray(response);
+                        //String s="";
+                        int flag2=0;
+                        for (int i = 0; i < products.length(); i++) {
+                            JSONObject productObject = products.getJSONObject(i);
+                            int buildingNumber = productObject.getInt("buildingNumber");
+                            String EntryTime=productObject.getString("EntryTime");
+                            int isEntered=productObject.getInt("isEntered");
+                            String EntryText=productObject.getString("EntryText");
+                            int EntryNumber=productObject.getInt("EntryNumber");
+                            String name = productObject.getString("name");
+                            // s=s+buildingNumber+"\t"+name+"\n";
+                            name2[0].add(EntryText);
+                                //name2[buildingNumber].add(EntryText);
+                            if(isEntered==1)
+                            {
+                                flag2++;
+                                map1[0].put(name,true);
+                                map2[0].put(name,EntryNumber);
+                                map3[0].put(name,EntryTime);
+                                map4[0].put(name,buildingNumber);
 
-
-            Cursor cursor = db1.query(dataContract.dataEntry.BLOCK[index], null, null, null, null, null, null);
-            try {
-
-                if(name2[index].size()==0) {
-
-                    int nameColumnIndex = cursor.getColumnIndex(dataContract.dataEntry.COLUMN_NAME);
-                    int buildingNumber = cursor.getColumnIndex(dataContract.dataEntry.COLUMN_BUILDING_NUMBER);
-                    int EntryString = cursor.getColumnIndex(dataContract.dataEntry.ENTRY_TEXT);
-                    int IsEntered = cursor.getColumnIndex(dataContract.dataEntry.IS_ENTERED);
-                    int Time = cursor.getColumnIndex(dataContract.dataEntry.ENTRY_TIME);
-                    int EntryNumber = cursor.getColumnIndex(dataContract.dataEntry.ENTRY_NUMBER);
-                    int flag = 0;
-
-                    while (cursor.moveToNext()) {
-                        String currentName = cursor.getString(nameColumnIndex);
-                        int currentBuildingNo = cursor.getInt(buildingNumber);
-                        String time = cursor.getString(Time);
-                        int isEntered = cursor.getInt(IsEntered);
-                        String entryString = cursor.getString(EntryString);
-                        int entryNumber = cursor.getInt(EntryNumber);
-
-                        name2[index].add(entryString);
-                        if (isEntered == 1) {
-                            flag++;
-                            map1[index].put(currentName, true);
-                            map2[index].put(currentName, entryNumber);
-                            map3[index].put(currentName, time);
-                            map4[index].put(currentName, currentBuildingNo);
+                            }
+                            number[0]++;
                         }
-                        number[index]++;
+                        //Toast.makeText(getApplicationContext(),flag2+"",Toast.LENGTH_SHORT).show();
+
+                    } catch (JSONException e) {
                     }
                 }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            } finally {
-                cursor.close();
-            }
+                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
 
-
-                if(name2[0].size()==0)
-                {
-                    Cursor cursor2 = db1.query(dataContract.dataEntry.TABLE_NAME2, null, null, null, null, null, null);
-                try {
-
-                    int nameColumnIndex2 = cursor2.getColumnIndex(dataContract.dataEntry.COLUMN_NAME);
-                    int buildingNumber2 = cursor2.getColumnIndex(dataContract.dataEntry.COLUMN_BUILDING_NUMBER);
-                    int EntryString2 = cursor2.getColumnIndex(dataContract.dataEntry.ENTRY_TEXT);
-                    int IsEntered2 = cursor2.getColumnIndex(dataContract.dataEntry.IS_ENTERED);
-                    int Time2 = cursor2.getColumnIndex(dataContract.dataEntry.ENTRY_TIME);
-                    int EntryNumber2 = cursor2.getColumnIndex(dataContract.dataEntry.ENTRY_NUMBER);
-                    int flag2 = 0;
-
-                    while (cursor2.moveToNext()) {
-                        String currentName = cursor2.getString(nameColumnIndex2);
-                        int currentBuildingNo = cursor2.getInt(buildingNumber2);
-                        String time = cursor2.getString(Time2);
-                        int isEntered = cursor2.getInt(IsEntered2);
-                        String entryString = cursor2.getString(EntryString2);
-                        int entryNumber = cursor2.getInt(EntryNumber2);
-
-                        name2[0].add(entryString);
-                        if (isEntered == 1) {
-                            flag2++;
-                            map1[0].put(currentName, true);
-                            map2[0].put(currentName, entryNumber);
-                            map3[0].put(currentName, time);
-                            map4[0].put(currentName, currentBuildingNo);
-                        }
-                        number[0]++;
-                    }
                 }
-                finally {
-                    cursor2.close();
-                }
-                }
+            });
+
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest1);
 
         }
-    }
 
-//    public void scanBarcode(View view)
-//    {
-//        Intent intent=new Intent(this,ScanBarcodeActivity.class);
-//        startActivityForResult(intent,0);
-//    }
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -191,35 +164,11 @@ public class MainActivity2 extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId())
         {
-//            case R.id.block3:
-//                mGender=3;
-//                Toast.makeText(MainActivity2.this,"Block 3 is selected",Toast.LENGTH_SHORT).show();
-//                return true;
-//            case R.id.block4:
-//                mGender=4;
-//                Toast.makeText(MainActivity2.this,"Block 4 is selected",Toast.LENGTH_SHORT).show();
-//                return true;
-//            case R.id.block5:
-//                mGender=5;
-//                Toast.makeText(MainActivity2.this,"Block 5 is selected",Toast.LENGTH_SHORT).show();
-//                return true;
             case R.id.entryList2:
                 Intent intent=new Intent(MainActivity2.this,NameListActivity.class);
                 startActivity(intent);
                 return true;
-//            case R.id.add:
-//                Intent intent1=new Intent(MainActivity2.this,AddActivity.class);
-//                startActivity(intent1);
-//                return true;
-//            case R.id.search:
-//                Intent intent3=new Intent(MainActivity2.this,SearchActivity.class);
-//                startActivity(intent3);
-//                return true;
-//
-//            case R.id.graph:
-//                Intent intent2=new Intent(MainActivity2.this,GraphActivity.class);
-//                startActivity(intent2);
-//                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -236,7 +185,12 @@ public class MainActivity2 extends AppCompatActivity {
                     Barcode barcode=data.getParcelableExtra("barcode");
                     Calendar calendar=Calendar.getInstance();
                     SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss");
-                    String time=format.format(calendar.getTime());
+                    time=format.format(calendar.getTime());
+
+                    Date c = Calendar.getInstance().getTime();
+                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                    date = df.format(c);
+
                     String p="";
                     //barcodeResult.setText(barcode.displayValue);
                     String s=String.valueOf(barcode.displayValue.toCharArray(),0,barcode.displayValue.length());
@@ -253,166 +207,61 @@ public class MainActivity2 extends AppCompatActivity {
                             }
                         }
                     }
-                    String s1=String.valueOf(barcode.displayValue.toCharArray(),i1+1,i-i1-1);
-                    String s2=String.valueOf(barcode.displayValue.toCharArray(),0,i+1);
+                    s1=String.valueOf(barcode.displayValue.toCharArray(),i1+1,i-i1-1);
+                    s2=String.valueOf(barcode.displayValue.toCharArray(),0,i+1);
                     //Toast.makeText(MainActivity2.this,s1,Toast.LENGTH_SHORT).show();
                     emp_name=s2;
-                    String entry,entry1;
-                    Boolean b1=map1[index].get(s2);
+                    //String entry,entry1;
+                    b1=map1[0].get(s2);
+                    flag1 = 0;
+                    check1 = 0;
+                    StringRequest stringRequest1 = new StringRequest(Request.Method.GET, Constants.URL_FETCH_DATA, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            check1 = 1;
+                            try {
+                                JSONArray products = new JSONArray(response);
+                                //String s="";
+                                for (int i = 0; i < products.length(); i++) {
+                                    JSONObject productObject = products.getJSONObject(i);
+                                    int buildingNumber = productObject.getInt("buildingNumber");
+                                    String name = productObject.getString("name");
+                                    // s=s+buildingNumber+"\t"+name+"\n";
+                                    if(name.equals(emp_name))
+                                        flag1=1;
+                                    if (name.equals(emp_name) && buildingNumber == mGender) {
+                                        //Toast.makeText(MainActivity2.this, "Person Already exist in database", Toast.LENGTH_SHORT).show();
+                                        flag1 = 2;
+                                        break;
+                                    }
+
+                                }
+                                if(flag1==1)
+                                    Toast.makeText(MainActivity2.this, "Person is not allowed in this building", Toast.LENGTH_SHORT).show();
+                                else
+                                {
+                                    sachin2();
+                                }
 
 
-                    dataDbHelper mdataDbHelper=new dataDbHelper(MainActivity2.this);
-
-                    SQLiteDatabase db1=mdataDbHelper.getReadableDatabase();
-                    String []projection={
-                            dataContract.dataEntry.COLUMN_NAME,
-                            dataContract.dataEntry.COLUMN_BUILDING_NUMBER
-                    };
-                    String selection=dataContract.dataEntry.COLUMN_NAME+"=?";
-                    String []selectionArgs={emp_name};
-                    Cursor cursor=db1.query(dataContract.dataEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,null);
-
-                    int nameColumnIndex=cursor.getColumnIndex(dataContract.dataEntry.COLUMN_NAME);
-                    int buildingNumber=cursor.getColumnIndex(dataContract.dataEntry.COLUMN_BUILDING_NUMBER);
-                    int flag=0;
-
-                    while(cursor.moveToNext())
-                    {
-                        String currentName=cursor.getString(nameColumnIndex);
-                        int currentBuildingNo=cursor.getInt(buildingNumber);
-                        if(currentName.equals(emp_name))
-                        {
-                            flag=1;
-                        }
-                        if(currentName.equals(emp_name) && mGender==currentBuildingNo)
-                        {
-                            flag=2;
-                            break;
-                        }
-//                        else if(currentName.equals(emp_name) && mGender==currentBuildingNo)
-//                        {
-//                            flag=0;
-//                            break;
-//                        }
-                    }
-                    cursor.close();
-                    if(flag==1)
-                    {
-                        Toast.makeText(MainActivity2.this,"Person is not allowed in this Building",Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
-                        entryTableHelper mentryTableHelper=new entryTableHelper(MainActivity2.this);
-                        SQLiteDatabase db2=mentryTableHelper.getWritableDatabase();
-                        ContentValues values=new ContentValues();
-                        ContentValues values1=new ContentValues();
-                        ContentValues values2=new ContentValues();
-
-                        if(b1==null)
-                        {
-
-
-
-                            map3[0].put(s2,time);
-                            map2[0].put(s2,number[0]);
-                            map4[0].put(s2,mGender);
-                            number[0]++;
-                            map1[0].put(s2,true);
-                            entry1="Entry Time :"+time+"\n"+s2+"Block- "+mGender;
-                            name2[0].add(entry1);
-
-
-
-
-                            values2.put(dataContract.dataEntry.COLUMN_NAME,s2);
-                            values2.put(dataContract.dataEntry.ENTRY_TEXT,entry1);
-                            values2.put(dataContract.dataEntry.COLUMN_BUILDING_NUMBER,mGender);
-                            values2.put(dataContract.dataEntry.ENTRY_TIME,time);
-                            values2.put(dataContract.dataEntry.ENTRY_NUMBER,map2[0].get(s2));
-                            values2.put(dataContract.dataEntry.IS_ENTERED,1);
-                            values2.put(dataContract.dataEntry.ROLL_NO,s1);
-                            //values.put(dataContract.dataEntry.NUMBER,number);
-                            db2.insert(dataContract.dataEntry.TABLE_NAME2,null,values2);
-
-
-
-
-
-
-                            map3[index].put(s2,time);
-                            map2[index].put(s2,number[index]);
-                            map4[index].put(s2,mGender);
-                            number[index]++;
-                            map1[index].put(s2,true);
-                            entry=(number[index])+". Entry Time :"+time+"\n"+s2+"Block- "+mGender;
-                            name2[index].add(entry);
-                            barcodeResult.setText(s2+"\n"+"Entered");
-                            values.put(dataContract.dataEntry.COLUMN_NAME,s2);
-                            values.put(dataContract.dataEntry.ENTRY_TEXT,entry);
-                            values.put(dataContract.dataEntry.COLUMN_BUILDING_NUMBER,mGender);
-                            values.put(dataContract.dataEntry.ENTRY_TIME,time);
-                            values.put(dataContract.dataEntry.ENTRY_NUMBER,map2[index].get(s2));
-                            values.put(dataContract.dataEntry.IS_ENTERED,1);
-                            values.put(dataContract.dataEntry.ROLL_NO,s1);
-                            //values.put(dataContract.dataEntry.NUMBER,number);
-                            db2.insert(dataContract.dataEntry.BLOCK[index],null,values);
-                            //values1.put(dataContract.dataEntry.NUMBER,number);
-//                            if(number!=1)
-                            // db2.update(dataContract.dataEntry.NUMBER_TABLE,values1,dataContract.dataEntry._ID+"=1",null);
-//                            else
-//                                db2.insert(dataContract.dataEntry.NUMBER_TABLE,null,values1);
-                            values1.put(dataContract.dataEntry.ENTRY_TIME,time);
-                            db2.insert(dataContract.dataEntry.NUMBER_TABLE,null,values1);
-                        }
-                        else {
-                            int p1=1;//can be removed
-                            if(map4[0].get(s2)!=mGender && p1==0)
-                            {
-                                Toast.makeText(MainActivity2.this,"Person is already in Block"+map4[0].get(s2)+"",Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                map1[index].put(s2, null);
-                                entry = (map2[index].get(s2) + 1) + ". Entry Time :" + map3[index].get(s2) + "\t\t\t" + "Exit Time :" + time + "\n" + s2 + "Block- " + mGender;
-                                name2[index].add(map2[index].get(s2), entry);
-
-
-                                //Toast.makeText(MainActivity2.this,map2[index].get(s2)+1+"",Toast.LENGTH_SHORT).show();
-
-                                name2[index].remove(map2[index].get(s2) + 1);
-                                barcodeResult.setText(s2 + "\n" + "Exited");
-
-
-
-                                map1[0].put(s2, null);
-                                entry1 = "Entry Time :" + map3[0].get(s2) + "\t\t\t" + "Exit Time :" + time + "\n" + s2 + "Block- " + mGender;
-                                name2[0].add(map2[0].get(s2), entry1);
-                                name2[0].remove(map2[0].get(s2) + 1);
-                                barcodeResult.setText(s2 + "\n" + "Exited");
-
-
-
-                                //values.put(dataContract.dataEntry.COLUMN_NAME,s2);
-                                values2.put(dataContract.dataEntry.ENTRY_TEXT, entry1);
-//                              //values.put(dataContract.dataEntry.COLUMN_BUILDING_NUMBER,mGender[index]);
-                                values2.put(dataContract.dataEntry.IS_ENTERED, 2);
-                                db2.update(dataContract.dataEntry.TABLE_NAME2, values2, dataContract.dataEntry.ENTRY_NUMBER + "=" + map2[0].get(s2), null);
-
-
-
-
-                                //values.put(dataContract.dataEntry.COLUMN_NAME,s2);
-                                values.put(dataContract.dataEntry.ENTRY_TEXT, entry);
-//                              //values.put(dataContract.dataEntry.COLUMN_BUILDING_NUMBER,mGender[index]);
-                                values.put(dataContract.dataEntry.IS_ENTERED, 2);
-                                //db2.update(dataContract.dataEntry.BLOCK[index], values, dataContract.dataEntry.ENTRY_NUMBER + "=" + map2[index].get(s2), null);
-                                db2.update(dataContract.dataEntry.BLOCK[index], values, dataContract.dataEntry.ENTRY_NUMBER + "=" + map2[index].get(s2), null);
+                                //Toast.makeText(AddActivity.this,s,Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
                             }
                         }
-                    }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            check1 = 1;
+                            Toast.makeText(getApplicationContext(), "sachin", Toast.LENGTH_SHORT).show();
 
+                        }
+                    });
+
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    requestQueue.add(stringRequest1);
                 }
                 else {
-                    barcodeResult.setText("No Barcode Found");
+                    barcodeResult.setText("No QR Code Found");
                 }
             }
         }
@@ -440,9 +289,120 @@ public class MainActivity2 extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
-//    public void entryList(View view)
-//    {
-//        Intent intent=new Intent(MainActivity2.this,NameListActivity.class);
-//        startActivity(intent);
-//    }
+
+    public void sachin2()
+    {
+        if(b1!=null && map4[0].get(s2)!=index)
+        {
+            barcodeResult.setText("Person is already in block"+map4[0].get(s2));
+            Toast.makeText(getApplicationContext(),"Person is already in block"+map4[0].get(s2),Toast.LENGTH_SHORT).show();
+            return ;
+        }
+        if(b1==null)
+        {
+            map3[0].put(s2,time);
+            map2[0].put(s2,number[0]);
+            map4[0].put(s2,mGender);
+            number[0]++;
+            map1[0].put(s2,true);
+            entry1="Entry Time :"+time+"\n"+"Date : "+date+"\n"+s2+"Block- "+mGender;
+            name2[0].add(entry1);
+            barcodeResult.setText(s2+"\n Entered");
+
+
+            name2[index].add(entry1);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_ENTRY_TABLE, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    //progressDialog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        //Toast.makeText(AddActivity.this, "QR code Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+
+                    }
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "sachin", Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> response = new HashMap<>();
+
+                    response.put("name", emp_name);
+                    response.put("buildingNumber", mGender + "");
+                    response.put("EntryText",entry1);
+                    response.put("RollNumber",s1);
+                    response.put("EntryTime",time);
+                    response.put("isEntered",1+"");
+                    response.put("EntryNumber",map2[0].get(s2)+"");
+
+                    return response;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+
+
+
+        }
+        else
+        {
+
+            map1[0].put(s2, null);
+            entry1 = "Entry Time :" + map3[0].get(s2) + "\t\t\t" + "\t\t\t\tExit Time :" + time + "\n"+"Date : "+date+"\n" + s2 + "Block- " + mGender;
+            name2[0].add(map2[0].get(s2), entry1);
+            name2[0].remove(map2[0].get(s2) + 1);
+            barcodeResult.setText(s2 + "\n" + "Exited");
+
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_UPDATE_ENTRY_TABLE, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    //progressDialog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        //Toast.makeText(AddActivity.this, "QR code Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+
+                    }
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "sachin", Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> response = new HashMap<>();
+
+                    response.put("EntryText",entry1);
+                    response.put("isEntered",2+"");
+                    response.put("EntryNumber",map2[0].get(s2)+"");
+
+                    return response;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+
+        }
+
+
+
+
+
+
+    }
+
 }

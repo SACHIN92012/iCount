@@ -138,10 +138,6 @@ public class ScanQRActivity extends AppCompatActivity {
                     t.start();
                     t1.start();
 
-//                    Intent intent=new Intent();
-//                    intent.putExtra("barcode",barcodes.valueAt(0));
-//                    setResult(CommonStatusCodes.SUCCESS,intent);
-                    //finish();
                 }
             }
         });
